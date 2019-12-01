@@ -97,17 +97,11 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_Canvas__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util/Canvas */ "./src/util/Canvas.js");
 /* harmony import */ var _classes_Player__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./classes/Player */ "./src/classes/Player.js");
+/* harmony import */ var _classes_WorldMap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./classes/WorldMap */ "./src/classes/WorldMap.js");
 
- // create 16 x 9 map
 
-var map = new Array(45).fill(new Array(80).fill(0));
 
-for (var y in map) {
-  for (var x in map[y]) {
-    map[y][x] = Math.random() < 0.3 ? 1 : 0;
-  }
-}
-
+var worldMap = new _classes_WorldMap__WEBPACK_IMPORTED_MODULE_2__["WorldMap"]();
 var player = new _classes_Player__WEBPACK_IMPORTED_MODULE_1__["Player"]();
 var previousTick = 0;
 
@@ -127,19 +121,12 @@ function shouldUpdate() {
 }
 
 function update() {
-  player.update();
+  player.update(worldMap);
 }
 
 function render() {
-  // draw the map
   Object(_util_Canvas__WEBPACK_IMPORTED_MODULE_0__["drawRect"])(0, 0, 1280, 720, "black");
-
-  for (var _y in map) {
-    for (var _x in map[_y]) {
-      Object(_util_Canvas__WEBPACK_IMPORTED_MODULE_0__["drawRect"])(_x * 16, _y * 16, 16, 16, map[_y][_x] == 1 ? "red" : "black", "white");
-    }
-  }
-
+  worldMap.render();
   player.render();
 }
 
@@ -219,7 +206,32 @@ function () {
   }, {
     key: "render",
     value: function render() {
-      Object(_util_Canvas__WEBPACK_IMPORTED_MODULE_0__["drawRect"])(this.x * 16, this.y * 16, 16, 16, "white", "blue");
+      // render head
+      Object(_util_Canvas__WEBPACK_IMPORTED_MODULE_0__["drawRect"])(this.x * 16, this.y * 16, 16, 16, "white", "blue"); // render train
+
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.train[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var block = _step.value;
+          Object(_util_Canvas__WEBPACK_IMPORTED_MODULE_0__["drawRect"])(block.x * 16, block.y * 16, 16, 16, "green", "blue");
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
     }
   }, {
     key: "move",
@@ -250,13 +262,91 @@ function () {
       this.y += this.yDir;
     }
   }, {
+    key: "addToTrain",
+    value: function addToTrain() {
+      var x, y;
+
+      if (this.train.length < 1) {
+        x = this.x - this.xDir;
+        y = this.y - this.yDir;
+      }
+
+      this.train.push({
+        x: x,
+        y: y
+      });
+    }
+  }, {
     key: "update",
-    value: function update() {
+    value: function update(worldMap) {
       this.move();
+
+      if (worldMap.tiles[this.y][this.x] == 1) {
+        worldMap.tiles[this.y][this.x] = 0;
+        this.addToTrain();
+      }
     }
   }]);
 
   return Player;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/classes/WorldMap.js":
+/*!*********************************!*\
+  !*** ./src/classes/WorldMap.js ***!
+  \*********************************/
+/*! exports provided: WorldMap */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WorldMap", function() { return WorldMap; });
+/* harmony import */ var _util_Canvas__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/Canvas */ "./src/util/Canvas.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var WorldMap =
+/*#__PURE__*/
+function () {
+  function WorldMap() {
+    _classCallCheck(this, WorldMap);
+
+    this.tiles = [];
+
+    for (var y = 0; y < 45; y++) {
+      this.tiles.push([]);
+
+      for (var x = 0; x < 80; x++) {
+        this.tiles[y].push(Math.random() < 0.05 ? 1 : 0);
+      }
+    }
+  }
+
+  _createClass(WorldMap, [{
+    key: "update",
+    value: function update() {}
+  }, {
+    key: "render",
+    value: function render() {
+      for (var y = 0; y < this.tiles.length; y++) {
+        for (var x = 0; x < this.tiles[y].length; x++) {
+          var tile = this.tiles[y][x];
+          Object(_util_Canvas__WEBPACK_IMPORTED_MODULE_0__["drawRect"])(x * 16, y * 16, 16, 16, tile == 1 ? "red" : "black", "white");
+        }
+      }
+    }
+  }]);
+
+  return WorldMap;
 }();
 
 
@@ -299,7 +389,7 @@ var drawRect = function drawRect(x, y, w, h) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/trey/dev/snake/src/app.js */"./src/app.js");
+module.exports = __webpack_require__(/*! C:\dev\snake\src\app.js */"./src/app.js");
 
 
 /***/ })
