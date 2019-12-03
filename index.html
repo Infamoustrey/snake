@@ -4,10 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Monofett&display=swap"
+      rel="stylesheet"
+    />
+
     <title>Snake</title>
+
+    <style>
+      h1 {
+        font-family: "Monofett", cursive;
+      }
+    </style>
   </head>
   <body>
-    <canvas style="width: 100%" width="1280" height="720"></canvas>
+    <div style="display: flex; height: 100vh; flex-direction: column;">
+      <div style="width: 100%;">
+        <h1 style="text-align: center;">SNAKE JS</h1>
+      </div>
+      <div
+        style="width: 80%; margin-top: auto; margin-bottom: auto; margin-left: auto; margin-right: auto;"
+      >
+        <canvas style="width: 100%;" width="1280" height="720"></canvas>
+      </div>
+    </div>
     <script src="dist/app.js"></script>
   </body>
 </html>
