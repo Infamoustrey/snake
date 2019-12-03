@@ -112,7 +112,7 @@ var getTime = function getTime() {
 function shouldUpdate() {
   var now = getTime();
 
-  if (now - previousTick > 500 || previousTick == 0) {
+  if (now - previousTick > 300 || previousTick == 0) {
     previousTick = now;
     return true;
   }
