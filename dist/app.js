@@ -262,6 +262,22 @@ function () {
       this.y += this.yDir;
     }
   }, {
+    key: "moveTrain",
+    value: function moveTrain() {
+      for (var i = 0; i < this.train.length; i++) {
+        this.train[i].prevX = this.train[i].x;
+        this.train[i].prevY = this.train[i].y;
+
+        if (i == 0) {
+          this.train[i].x = this.x - this.xDir;
+          this.train[i].y = this.y - this.yDir;
+        } else {
+          this.train[i].x = this.train[i - 1].prevX;
+          this.train[i].y = this.train[i - 1].prevY;
+        }
+      }
+    }
+  }, {
     key: "addToTrain",
     value: function addToTrain() {
       var x, y;
@@ -269,17 +285,23 @@ function () {
       if (this.train.length < 1) {
         x = this.x - this.xDir;
         y = this.y - this.yDir;
+      } else {
+        x = this.train[this.train.length - 1].prevX;
+        y = this.train[this.train.length - 1].prevY;
       }
 
       this.train.push({
         x: x,
-        y: y
+        y: y,
+        prevX: null,
+        prevY: null
       });
     }
   }, {
     key: "update",
     value: function update(worldMap) {
       this.move();
+      this.moveTrain();
 
       if (worldMap.tiles[this.y][this.x] == 1) {
         worldMap.tiles[this.y][this.x] = 0;
@@ -389,7 +411,7 @@ var drawRect = function drawRect(x, y, w, h) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\dev\snake\src\app.js */"./src/app.js");
+module.exports = __webpack_require__(/*! /home/trey/dev/snake/src/app.js */"./src/app.js");
 
 
 /***/ })
